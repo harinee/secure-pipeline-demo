@@ -1,0 +1,95 @@
+version = "1.0"
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.7
+
+buildscript {
+    ext.versions = [
+            springBootVersion: "1.5.21.RELEASE"
+
+            // fix for vulnerable FasterXML jackson-databind dependency
+//             springBootVersion: "2.1.5.RELEASE"
+    ]
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${versions.springBootVersion}")
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:5.0.0'
+    }
+}
+
+apply plugin: 'org.owasp.dependencycheck'
+
+
+dependencyCheck {
+    failBuildOnCVSS=10
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:2.0.0"
+    }
+}
+
+apply plugin: "com.github.spotbugs"
+configurations {
+    spotbugsStylesheets { transitive false }
+}
+
+spotbugs {
+    toolVersion '3.1.12'
+    effort 'max'
+    reportLevel 'high'
+}
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled false
+        html {
+            enabled true
+            stylesheet resources.text.fromArchiveEntry(configurations.spotbugsStylesheets, 'fancy-hist.xsl')
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web:${versions.springBootVersion}") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    compile("org.springframework.boot:spring-boot-starter-jetty:${versions.springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-actuator:${versions.springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${versions.springBootVersion}")
+    compile 'com.h2database:h2:1.4.197'
+
+    compile group: 'org.apache.struts', name: 'struts2-core', version: '2.5'
+
+//  fix for vulnerable Apache Struts
+//  compile group: 'org.apache.struts', name: 'struts2-core', version: '2.5.20'
+
+    testCompile "junit:junit:4.12"
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+    spotbugsStylesheets "com.github.spotbugs:spotbugs:$spotbugs.toolVersion"
+}
+
