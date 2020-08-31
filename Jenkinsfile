@@ -22,36 +22,24 @@ pipeline {
             }
           }
         }
-      stage('SAST-C project') {
-       post {
-        always {
-          archiveArtifacts 'flawfinderReport.html'
-        }
-      }
-      steps {
-        sh '''flawfinder -F --html --quiet --error-level=1 myhtml>flawfinderReport.html'''
-      }
-     }
      stage('SAST-Java project') {
        post {
         always {
-          archiveArtifacts 'campr-injection-workshop/build/reports/spotbugs/main.html'
+          archiveArtifacts '/build/reports/spotbugs/main.html'
         }
       }
       steps {
-        sh '''cd campr-injection-workshop/
-./gradlew check'''
+        sh '''./gradlew check'''
        }
       }
     stage('Dependency check') {
        post {
         always {
-          archiveArtifacts 'campr-injection-workshop/build/reports/dependency-check-report.html'
+          archiveArtifacts '/build/reports/dependency-check-report.html'
         }
       }
       steps {
-        sh '''cd campr-injection-workshop
-./gradlew dependencyCheckAnalyze'''
+        sh '''./gradlew dependencyCheckAnalyze'''
       }
     }
     stage('Secret scan') {
