@@ -1,2 +1,5 @@
 .idea/
 .talismanrc
+*.iml
+*.ipr
+*.iws

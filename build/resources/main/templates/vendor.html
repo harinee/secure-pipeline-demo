@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Injection Workshop</title>
+
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
+
+    <style type="text/css">
+        body {
+            padding-top: 100px;
+            padding-bottom: 40px;
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome - <span th:text="${vendor}" /></h1>
+    <h2><a href="/">Logout</a></h2>
+</div>
+</body>
+</html>
