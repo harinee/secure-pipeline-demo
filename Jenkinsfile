@@ -1,5 +1,10 @@
     pipeline {
-      agent any
+       agent {
+          kubernetes {
+            yamlFile 'build-agent.yaml'
+            idleMinutes 1
+           }
+        }
       stages {
         stage('Build') {
             parallel {
