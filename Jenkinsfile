@@ -12,11 +12,12 @@
                      steps {
                          sh 'echo "Secret scan"'
                      }
-                  }
+                }
             }
         }
         stage('Pre-deployment') {
           parallel {
+              stages {
                 stage('Unit tests') {
                   steps {
                    echo 'Unit testing'
@@ -26,29 +27,29 @@
                  steps {
                   echo 'integration testing'
                   }
+                 }
+              }
+             stage('SAST') {
+               post {
+                always {
+                  archiveArtifacts '/build/reports/spotbugs/main.html'
                 }
               }
-            }
-         stage('SAST') {
-           post {
-            always {
-              archiveArtifacts '/build/reports/spotbugs/main.html'
-            }
-          }
-          steps {
-            sh '''./gradlew check'''
-           }
-          }
-        stage('Dependency check') {
-           post {
-            always {
-              archiveArtifacts '/build/reports/dependency-check-report.html'
+              steps {
+                sh '''./gradlew check'''
+               }
+              }
+            stage('Dependency check') {
+               post {
+                always {
+                  archiveArtifacts '/build/reports/dependency-check-report.html'
+                }
+              }
+              steps {
+                sh '''./gradlew dependencyCheckAnalyze'''
+              }
             }
           }
-          steps {
-            sh '''./gradlew dependencyCheckAnalyze'''
-          }
-        }
         stage('Deploy test env') {
           steps {
             echo 'Test env ready'
