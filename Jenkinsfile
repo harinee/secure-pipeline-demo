@@ -44,7 +44,7 @@
             stage('SAST') {
                post {
                 always {
-                  archiveArtifacts allowEmptyArchive: true, artifacts:  '/build/reports/spotbugs/main.html', fingerprint: true
+                  archiveArtifacts allowEmptyArchive: true, artifacts:  '/build/reports/spotbugs/main.html', fingerprint: true, onlyIfSuccessful: false
                 }
               }
               steps {
@@ -54,7 +54,7 @@
             stage('Dependency check') {
                post {
                 always {
-                  archiveArtifacts allowEmptyArchive: true, artifacts: '/build/reports/dependency-check-report.html', fingerprint: true
+                  archiveArtifacts allowEmptyArchive: true, artifacts: '/build/reports/dependency-check-report.html', fingerprint: true, onlyIfSuccessful: false
                 }
               }
               steps {
