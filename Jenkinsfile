@@ -5,7 +5,7 @@
             parallel {
                 stage('Build app') {
                     steps {
-                        sh './gradlew build'
+                        sh '''./gradlew build -x test'''
                      }
                 }
                 stage('Secret scan') {
@@ -21,7 +21,7 @@
               stages {
                 stage('Unit tests') {
                   steps {
-                   echo 'Unit testing'
+                   sh '''./gradlew test'''
                   }
                 }
                 stage('Integration tests') {
