@@ -51,6 +51,10 @@
               }
             }
           }
+         }
+        }
+       }
+      }
         stage('Deploy test env') {
           steps {
             echo 'Test env ready'
@@ -76,6 +80,3 @@
           }
         }
       }
-    }
-  }
- }
