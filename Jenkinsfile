@@ -17,6 +17,7 @@
         }
         stage('Pre-deployment') {
           parallel {
+           stage('Code Tests'){
               stages {
                 stage('Unit tests') {
                   steps {
@@ -77,3 +78,4 @@
       }
     }
   }
+ }
