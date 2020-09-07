@@ -1,77 +1,77 @@
-pipeline {
-  agent any
-  stages {
-    stage('Pre-deployment') {
-      parallel {
-        stage('Build tests'){
-          stages{
-            stage('Build') {
-             steps {
-                echo 'Building'
-               }
-             }
-            stage('Unit tests') {
+    pipeline {
+      agent any
+      stages {
+        stage('Build') {
+            parallel {
+                stage('Build app') {
+                    steps {
+                        echo 'Building'
+                     }
+                 }
+                 stage('Secret scan') {
+                     steps {
+                         sh 'echo "Secret scan"'
+                     }
+                  }
+            }
+        }
+        stage('Pre-deployment') {
+          parallel {
+                stage('Unit tests') {
+                  steps {
+                   echo 'Unit testing'
+                  }
+                }
+               stage('Integration tests') {
+                 steps {
+                  echo 'integration testing'
+                  }
+                }
+              }
+            }
+         stage('SAST') {
+           post {
+            always {
+              archiveArtifacts '/build/reports/spotbugs/main.html'
+            }
+          }
+          steps {
+            sh '''./gradlew check'''
+           }
+          }
+        stage('Dependency check') {
+           post {
+            always {
+              archiveArtifacts '/build/reports/dependency-check-report.html'
+            }
+          }
+          steps {
+            sh '''./gradlew dependencyCheckAnalyze'''
+          }
+        }
+        stage('Deploy test env') {
+          steps {
+            echo 'Test env ready'
+          }
+        }
+        stage('Functional tests | DAST') {
+          parallel {
+            stage('Functional tests') {
               steps {
-               echo 'Unit testing'
+                echo 'Functional tests'
               }
             }
-           stage('Integration tests') {
-             steps {
-              echo 'integration testing'
+            stage('Dynamic Security Analysis') {
+              steps {
+                echo 'ZAPing'
               }
             }
           }
         }
-     stage('SAST') {
-       post {
-        always {
-          archiveArtifacts '/build/reports/spotbugs/main.html'
-        }
-      }
-      steps {
-        sh '''./gradlew check'''
-       }
-      }
-    stage('Dependency check') {
-       post {
-        always {
-          archiveArtifacts '/build/reports/dependency-check-report.html'
-        }
-      }
-      steps {
-        sh '''./gradlew dependencyCheckAnalyze'''
-      }
-    }
-    stage('Secret scan') {
-      steps {
-        sh 'echo "Secret scan"'
-       }
-      }
-     }
-    }
-    stage('Deploy test env') {
-      steps {
-        echo 'Test env ready'
-      }
-    }
-    stage('Functional tests | DAST') {
-      parallel {
-        stage('Functional tests') {
+        stage('Deploy staging') {
           steps {
-            echo 'Functional tests'
-          }
-        }
-        stage('Dynamic Security Analysis') {
-          steps {
-            echo 'ZAPing'
+            echo 'Staging ready'
           }
         }
       }
     }
-    stage('Deploy staging') {
-      steps {
-        echo 'Staging ready'
-      }
-    }
-  }
-}
