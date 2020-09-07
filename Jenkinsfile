@@ -5,7 +5,7 @@
             parallel {
                 stage('Build app') {
                     steps {
-                        echo 'Building'
+                        sh './gradlew build'
                      }
                 }
                 stage('Secret scan') {
@@ -30,6 +30,7 @@
                   }
                 }
               }
+             }
             stage('SAST') {
                post {
                 always {
@@ -76,7 +77,6 @@
             echo 'Staging ready'
           }
         }
-      }
     }
   }
 

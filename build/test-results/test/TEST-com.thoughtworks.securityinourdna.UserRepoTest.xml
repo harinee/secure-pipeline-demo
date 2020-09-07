@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.thoughtworks.securityinourdna.UserRepoTest" tests="6" skipped="0" failures="1" errors="0" timestamp="2020-08-31T21:30:53" hostname="Harinees-MacBook-Pro.local" time="0.138">
+<testsuite name="com.thoughtworks.securityinourdna.UserRepoTest" tests="6" skipped="0" failures="1" errors="0" timestamp="2020-09-07T09:59:39" hostname="Harinees-MacBook-Pro.local" time="0.244">
   <properties/>
-  <testcase name="login_should_return_vendor_name_for_existing_user" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.125"/>
-  <testcase name="all_vendors_should_return_names_from_the_database" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.002"/>
-  <testcase name="login_should_work_for_existing_user" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.002"/>
-  <testcase name="add_names_should_insert_names_into_the_database" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.003"/>
-  <testcase name="login_should_deny_non_existing_user" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.002"/>
-  <testcase name="login_should_not_be_vulnerable_to_obvious_sql_injection" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.003">
+  <testcase name="login_should_return_vendor_name_for_existing_user" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.218"/>
+  <testcase name="all_vendors_should_return_names_from_the_database" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.004"/>
+  <testcase name="login_should_work_for_existing_user" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.005"/>
+  <testcase name="add_names_should_insert_names_into_the_database" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.007"/>
+  <testcase name="login_should_deny_non_existing_user" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.004"/>
+  <testcase name="login_should_not_be_vulnerable_to_obvious_sql_injection" classname="com.thoughtworks.securityinourdna.UserRepoTest" time="0.005">
     <failure message="java.lang.AssertionError" type="java.lang.AssertionError">java.lang.AssertionError
 	at org.junit.Assert.fail(Assert.java:86)
 	at org.junit.Assert.assertTrue(Assert.java:41)
