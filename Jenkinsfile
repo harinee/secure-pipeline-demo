@@ -7,11 +7,11 @@
                     steps {
                         echo 'Building'
                      }
-                 }
-                 stage('Secret scan') {
-                     steps {
-                         sh 'echo "Secret scan"'
-                     }
+                }
+                stage('Secret scan') {
+                    steps {
+                        sh 'echo "Secret scan"'
+                    }
                 }
             }
         }
@@ -24,13 +24,13 @@
                    echo 'Unit testing'
                   }
                 }
-               stage('Integration tests') {
+                stage('Integration tests') {
                  steps {
                   echo 'integration testing'
                   }
-                 }
+                }
               }
-             stage('SAST') {
+            stage('SAST') {
                post {
                 always {
                   archiveArtifacts '/build/reports/spotbugs/main.html'
@@ -39,7 +39,7 @@
               steps {
                 sh '''./gradlew check'''
                }
-              }
+            }
             stage('Dependency check') {
                post {
                 always {
@@ -51,10 +51,7 @@
               }
             }
           }
-         }
         }
-       }
-      }
         stage('Deploy test env') {
           steps {
             echo 'Test env ready'
@@ -80,3 +77,6 @@
           }
         }
       }
+    }
+  }
+
