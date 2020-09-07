@@ -5,7 +5,7 @@
             parallel {
                 stage('Build app') {
                     steps {
-                        sh '''./gradlew build -x test'''
+                        sh '''./gradlew clean clean build -x test -x spotbugsMain'''
                      }
                 }
                 stage('Secret scan') {
@@ -38,7 +38,7 @@
                 }
               }
               steps {
-                sh '''./gradlew check'''
+                sh '''./gradlew spotbugsMain'''
                }
             }
             stage('Dependency check') {
