@@ -18,7 +18,7 @@
                      container('trufflehog') {
                        sh 'git clone ${GIT_URL}'
                        sh 'cd secure-pipeline-demo && ls -al'
-                       sh 'cd secure-pipeline-demo && trufflehog .'
+                       sh 'cd secure-pipeline-demo && trufflehog .  || exit 0'
                        sh 'rm -rf secure-pipeline-demo'
                      }
                    }
