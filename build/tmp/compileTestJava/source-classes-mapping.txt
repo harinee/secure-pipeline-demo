@@ -1,2 +1,0 @@
-com/thoughtworks/securityinourdna/UserRepoTest.java
- com.thoughtworks.securityinourdna.UserRepoTest
