@@ -22,7 +22,7 @@ pipeline {
             }
           }
         }
-     stage('SAST-Java project') {
+     stage('SAST') {
        post {
         always {
           archiveArtifacts '/build/reports/spotbugs/main.html'
