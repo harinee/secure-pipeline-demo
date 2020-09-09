@@ -27,7 +27,6 @@
         }
         stage('Pre-deployment') {
           parallel {
-           stage('Code Tests'){
               stages {
                 stage('Unit tests') {
                   steps {
@@ -39,7 +38,6 @@
                   echo 'integration testing'
                   }
                 }
-              }
              }
             stage('SAST') {
                post {
