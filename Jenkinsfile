@@ -18,9 +18,8 @@
                      container('trufflehog') {
                        sh 'git clone ${GIT_URL}'
                        sh 'cd secure-pipeline-demo && ls -al'
-                       sh 'exit 0'
-#                        sh 'cd secure-pipeline-demo && trufflehog .  || exit 0'
-                       sh 'rm -rf secure-pipeline-demo'
+                       echo 'cd secure-pipeline-demo && trufflehog .'
+                       echo 'rm -rf secure-pipeline-demo'
                      }
                    }
                 }
@@ -32,8 +31,7 @@
               stages {
                 stage('Unit tests') {
                   steps {
-                   sh 'exit 0'
-#                    sh '''./gradlew test'''
+                   echo '''./gradlew test'''
                   }
                 }
                 stage('Integration tests') {
@@ -50,8 +48,7 @@
                 }
               }
               steps {
-                sh 'exit 0'
-#                 sh '''./gradlew spotbugsMain'''
+               echo '''./gradlew spotbugsMain'''
                }
             }
             stage('Dependency check') {
@@ -61,8 +58,7 @@
                 }
               }
               steps {
-                sh 'exit 0'
-#                 sh '''./gradlew dependencyCheckAnalyze'''
+                echo '''./gradlew dependencyCheckAnalyze'''
               }
             }
           }
