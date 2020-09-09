@@ -18,7 +18,8 @@
                      container('trufflehog') {
                        sh 'git clone ${GIT_URL}'
                        sh 'cd secure-pipeline-demo && ls -al'
-                       sh 'cd secure-pipeline-demo && trufflehog .  || exit 0'
+                       sh 'exit 0'
+#                        sh 'cd secure-pipeline-demo && trufflehog .  || exit 0'
                        sh 'rm -rf secure-pipeline-demo'
                      }
                    }
@@ -27,18 +28,21 @@
         }
         stage('Pre-deployment') {
           parallel {
+           stage('Code Tests'){
               stages {
                 stage('Unit tests') {
                   steps {
-                   sh '''./gradlew test || exit 0'''
+                   sh 'exit 0'
+#                    sh '''./gradlew test'''
                   }
                 }
                 stage('Integration tests') {
-                 steps {
-                  echo 'integration testing'
-                  }
+                   steps {
+                        echo 'integration testing'
+                   }
                 }
-             }
+              }
+           }
             stage('SAST') {
                post {
                 always {
@@ -46,7 +50,8 @@
                 }
               }
               steps {
-                sh '''./gradlew spotbugsMain || exit 0'''
+                sh 'exit 0'
+#                 sh '''./gradlew spotbugsMain'''
                }
             }
             stage('Dependency check') {
@@ -56,7 +61,8 @@
                 }
               }
               steps {
-                sh '''./gradlew dependencyCheckAnalyze || exit 0'''
+                sh 'exit 0'
+#                 sh '''./gradlew dependencyCheckAnalyze'''
               }
             }
           }
