@@ -122,14 +122,15 @@ pipeline {
             }
         }
         stage('Functional tests | DAST') {
-            agent any
             parallel {
                 stage('Functional tests') {
+                    agent any
                     steps {
                         echo 'Functional tests'
                     }
                 }
                 stage('Dynamic Security Analysis') {
+                    agent any
                     steps {
                         container('docker-cmds') {
                             sh 'docker run -t owasp/zap2docker-stable zap-baseline.py -t https://www.zaproxy.org/'
