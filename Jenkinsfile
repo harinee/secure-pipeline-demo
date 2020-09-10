@@ -1,16 +1,17 @@
 pipeline {
-    agent {
-        kubernetes {
-            yamlFile 'build-agent.yaml'
-            idleMinutes 1
-        }
-    }
     stages {
         stage('Build') {
             parallel {
+                agent any
                 stage('Build app') {
                     steps {
                         sh '''./gradlew clean clean build -x test -x spotbugsMain'''
+                    }
+                }
+                agent {
+                    kubernetes {
+                        yamlFile 'build-agent-trufflehog.yaml'
+                        idleMinutes 1
                     }
                 }
                 stage('Secret scan') {
@@ -27,6 +28,7 @@ pipeline {
         }
         stage('Pre-deployment') {
             parallel {
+                agent any
                 stage('Code Tests') {
                     stages {
                         stage('Unit tests') {
@@ -41,6 +43,7 @@ pipeline {
                         }
                     }
                 }
+                agent any
                 stage('SAST') {
                     post {
                         always {
@@ -51,6 +54,7 @@ pipeline {
                         echo '''./gradlew spotbugsMain'''
                     }
                 }
+                agent any
                 stage('Dependency check') {
                     post {
                         always {
@@ -63,6 +67,7 @@ pipeline {
                 }
             }
         }
+        agent any
         stage('Package') {
             steps {
                 container('docker-cmds') {
@@ -73,7 +78,13 @@ pipeline {
         }
         stage('Artefact Analysis') {
             parallel {
-                stage('Image Scan') {
+                agent {
+                    kubernetes {
+                        yamlFile 'build-agent-trivy.yaml'
+                        idleMinutes 1
+                    }
+                }
+                    stage('Image Scan') {
                     steps {
                         container('docker-cmds') {
                             sh '''#!/bin/sh
@@ -88,6 +99,12 @@ pipeline {
                         }
                     }
                 }
+                agent {
+                    kubernetes {
+                        yamlFile 'build-agent-dockle.yaml'
+                        idleMinutes 1
+                    }
+                }
                 stage('Image Hardening') {
                     steps {
                         container('dockle') {
@@ -97,11 +114,13 @@ pipeline {
                 }
             }
         }
+        agent any
         stage('Deploy test env') {
             steps {
                 echo 'Test env ready'
             }
         }
+         agent any
         stage('Functional tests | DAST') {
             parallel {
                 stage('Functional tests') {
@@ -109,6 +128,7 @@ pipeline {
                         echo 'Functional tests'
                     }
                 }
+                agent any
                 stage('Dynamic Security Analysis') {
                     steps {
                         container('docker-cmds') {
@@ -118,6 +138,7 @@ pipeline {
                 }
             }
         }
+        agent any
         stage('Deploy staging') {
             steps {
                 echo 'Staging ready'

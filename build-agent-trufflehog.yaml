@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: spring-build-ci
+spec:
+  containers:
+    - name: trufflehog
+      image: rmkanda/trufflehog
+      command:
+        - cat
+      tty: true
+  volumes:
+    - name: m2
+      hostPath:
+        path: /tmp/.m2/
+    - name: docker-sock
+      hostPath:
+        path: /var/run

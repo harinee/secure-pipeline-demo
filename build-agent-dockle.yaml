@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: spring-build-ci
+spec:
+  containers:
+    - name: dockle
+      image: rmkanda/dockle
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - mountPath: /var/run
+          name: docker-sock
+  volumes:
+    - name: m2
+      hostPath:
+        path: /tmp/.m2/
+    - name: docker-sock
+      hostPath:
+        path: /var/run
