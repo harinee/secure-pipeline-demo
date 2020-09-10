@@ -1,20 +1,21 @@
 pipeline {
+    agent none
     stages {
         stage('Build') {
             parallel {
-                agent any
                 stage('Build app') {
+                    agent any
                     steps {
                         sh '''./gradlew clean clean build -x test -x spotbugsMain'''
                     }
                 }
-                agent {
-                    kubernetes {
-                        yamlFile 'build-agent-trufflehog.yaml'
-                        idleMinutes 1
-                    }
-                }
                 stage('Secret scan') {
+                    agent {
+                        kubernetes {
+                            yamlFile 'build-agent-trufflehog.yaml'
+                            idleMinutes 1
+                        }
+                    }
                     steps {
                         container('trufflehog') {
                             sh 'git clone ${GIT_URL}'
@@ -28,8 +29,8 @@ pipeline {
         }
         stage('Pre-deployment') {
             parallel {
-                agent any
                 stage('Code Tests') {
+                    agent any
                     stages {
                         stage('Unit tests') {
                             steps {
@@ -43,8 +44,8 @@ pipeline {
                         }
                     }
                 }
-                agent any
                 stage('SAST') {
+                    agent any
                     post {
                         always {
                             archiveArtifacts allowEmptyArchive: true, artifacts: '/build/reports/spotbugs/main.html', fingerprint: true, onlyIfSuccessful: false
@@ -54,8 +55,8 @@ pipeline {
                         echo '''./gradlew spotbugsMain'''
                     }
                 }
-                agent any
                 stage('Dependency check') {
+                    agent any
                     post {
                         always {
                             archiveArtifacts allowEmptyArchive: true, artifacts: '/build/reports/dependency-check-report.html', fingerprint: true, onlyIfSuccessful: false
@@ -67,8 +68,8 @@ pipeline {
                 }
             }
         }
-        agent any
         stage('Package') {
+            agent any
             steps {
                 container('docker-cmds') {
                     sh 'ls -al'
@@ -78,13 +79,13 @@ pipeline {
         }
         stage('Artefact Analysis') {
             parallel {
-                agent {
-                    kubernetes {
-                        yamlFile 'build-agent-trivy.yaml'
-                        idleMinutes 1
-                    }
-                }
-                    stage('Image Scan') {
+                    stage('Container Dependency Scan') {
+                        agent {
+                            kubernetes {
+                                yamlFile 'build-agent-trivy.yaml'
+                                idleMinutes 1
+                            }
+                        }
                     steps {
                         container('docker-cmds') {
                             sh '''#!/bin/sh
@@ -99,13 +100,13 @@ pipeline {
                         }
                     }
                 }
-                agent {
-                    kubernetes {
-                        yamlFile 'build-agent-dockle.yaml'
-                        idleMinutes 1
-                    }
-                }
                 stage('Image Hardening') {
+                    agent {
+                        kubernetes {
+                            yamlFile 'build-agent-dockle.yaml'
+                            idleMinutes 1
+                        }
+                    }
                     steps {
                         container('dockle') {
                             sh 'dockle sample-app:latest'
@@ -114,21 +115,20 @@ pipeline {
                 }
             }
         }
-        agent any
         stage('Deploy test env') {
+            agent any
             steps {
                 echo 'Test env ready'
             }
         }
-         agent any
         stage('Functional tests | DAST') {
+            agent any
             parallel {
                 stage('Functional tests') {
                     steps {
                         echo 'Functional tests'
                     }
                 }
-                agent any
                 stage('Dynamic Security Analysis') {
                     steps {
                         container('docker-cmds') {
@@ -138,8 +138,8 @@ pipeline {
                 }
             }
         }
-        agent any
         stage('Deploy staging') {
+            agent any
             steps {
                 echo 'Staging ready'
             }
